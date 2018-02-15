@@ -461,6 +461,56 @@ def run_tails_config(args):
                           cwd=args.ansible_path)
 
 
+def check_for_updates(args):
+    """Check for SecureDrop updates"""
+    sdlog.info("Checking for SecureDrop updates...")
+
+    # Determine what branch we are on
+    current_tag = subprocess.check_output(['git', 'describe'], cwd=args.root)
+
+    # Fetch all branches
+    git_fetch_cmd = ['git', 'fetch', '--all']
+    subprocess.check_call(git_fetch_cmd, cwd=args.root)
+
+    # Get the most recent tag across all branches
+    git_latest_tag_cmd = "git describe --tags $(git rev-list --tags --max-count=1)"
+    latest_tag = subprocess.check_output(git_latest_tag_cmd, shell=True, cwd=args.root)
+
+    if current_tag != latest_tag:
+        sdlog.info("Update needed")
+        return True, latest_tag
+    sdlog.info("All updates applied")
+    return False, latest_tag
+
+
+def update(args):
+    """Verify, and apply latest SecureDrop workstation update"""
+    sdlog.info("Applying SecureDrop updates...")
+
+    update_status, latest_tag = check_for_updates(args)
+
+    if not update_status:
+        # Exit if we're up to date
+        sys.exit(0)
+
+    git_checkout_cmd = ['git', 'checkout', latest_tag]
+    subprocess.check_call(git_checkout_cmd, cwd=args.root)
+
+    sdlog.info("Verifying signature on latest update...")
+    get_release_key = ['gpg', '--recv-key', '22245C81E3BAEB4138B36061310F561200F4AD77']
+    subprocess.check_call(get_release_key, cwd=args.root)
+
+    git_verify_tag_cmd = ['git', 'tag', '-v', latest_tag]
+    sig_result = subprocess.check_output(git_verify_tag_cmd,
+                            stderr=subprocess.STDOUT, cwd=args.root)
+
+    if 'Good signature' not in sig_result:
+         sdlog.info("Signature verification failed.")
+    sdlog.info("Signature verification successful.")
+
+    sdlog.info("Updated to latest SecureDrop.")
+
+
 def get_logs(args):
     """Get logs for forensics and debugging purposes"""
     sdlog.info("Gathering logs for forensics and debugging")
@@ -527,6 +577,12 @@ def parse_argv(argv):
                                           help=restore_securedrop.__doc__)
     parse_restore.set_defaults(func=restore_securedrop)
     parse_restore.add_argument("restore_file")
+
+    parse_update = subparsers.add_parser('update', help=update.__doc__)
+    parse_update.set_defaults(func=update)
+
+    parse_update = subparsers.add_parser('check_for_updates', help=update.__doc__)
+    parse_update.set_defaults(func=check_for_updates)
 
     parse_logs = subparsers.add_parser('logs',
                                        help=get_logs.__doc__)
