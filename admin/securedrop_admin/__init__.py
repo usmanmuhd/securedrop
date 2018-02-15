@@ -478,9 +478,9 @@ def check_for_updates(args):
 
     if current_tag != latest_tag:
         sdlog.info("Update needed")
-        return True, latest_tag
+        return True, latest_tag.rstrip("\n")
     sdlog.info("All updates applied")
-    return False, latest_tag
+    return False, latest_tag.rstrip("\n")
 
 
 def update(args):
@@ -508,7 +508,7 @@ def update(args):
          sdlog.info("Signature verification failed.")
     sdlog.info("Signature verification successful.")
 
-    sdlog.info("Updated to latest SecureDrop.")
+    sdlog.info("Updated to SecureDrop {}.".format(latest_tag))
 
 
 def get_logs(args):
