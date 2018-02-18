@@ -22,7 +22,7 @@ from utils.instrument import InstrumentedApp
 overly_long_codename = 'a' * (Source.MAX_CODENAME_LEN + 1)
 
 
-class TestPytestSourceApp:
+class TestSourceApp:
 
     def test_page_not_found(self, source_app):
         """Verify the page not found condition returns the intended template"""
