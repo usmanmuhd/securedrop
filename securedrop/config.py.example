@@ -60,7 +60,6 @@ elif env == 'test':
     FlaskConfig.TESTING = True
     # Disable CSRF checks to make writing tests easier
     FlaskConfig.WTF_CSRF_ENABLED = False
-    # TODO use a unique temporary directory for each test so we can parallelize them
     SECUREDROP_DATA_ROOT = '/tmp/securedrop'
 
 # The following configuration is dependent on SECUREDROP_DATA_ROOT
