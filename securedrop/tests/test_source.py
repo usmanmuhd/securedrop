@@ -41,7 +41,7 @@ class TestSourceApp(TestCase):
         """Test that the landing page loads and looks how we expect"""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Submit documents for the first time", response.data)
+        self.assertIn("Submit for the first time", response.data)
         self.assertIn("Already submitted something?", response.data)
 
     def test_all_words_in_wordlist_validate(self):
@@ -466,7 +466,7 @@ class TestSourceApp(TestCase):
             # Source attempts to continue to navigate
             resp = client.post('/lookup', follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('Submit documents for the first time', resp.data)
+            self.assertIn('Submit for the first time', resp.data)
             self.assertNotIn('logged_in', session.keys())
             self.assertNotIn('codename', session.keys())
 
