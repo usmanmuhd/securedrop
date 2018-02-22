@@ -120,7 +120,7 @@ safety: ## Runs `safety check` to check python dependencies for vulnerabilities
 # https://wiki.openstack.org/wiki/Security/Projects/Bandit
 .PHONY: bandit
 bandit: ## Run bandit with medium level excluding test-related folders
-	@bandit --recursive . --exclude molecule,testinfra,securedrop/tests,admin/.tox -ll
+	@bandit --recursive . --exclude admin/.tox,admin/.venv,admin/.eggs,molecule,testinfra,securedrop/tests,.tox,.venv -ll
 
 .PHONY: update-pip-requirements
 update-pip-requirements: ## Updates all Python requirements files via pip-compile.
