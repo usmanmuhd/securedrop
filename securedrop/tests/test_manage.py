@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import io
 from os.path import abspath, dirname, exists, getmtime, join, realpath
 os.environ['SECUREDROP_ENV'] = 'test'  # noqa
 import config
@@ -197,7 +198,7 @@ class TestManage(object):
         manage.translate_desktop(args)
         messages_file = join(config.TEMP_DIR, 'desktop.pot')
         assert exists(messages_file)
-        pot = open(messages_file).read()
+        pot = io.open(messages_file).read()
         assert 'SecureDrop Source Interfaces' in pot
         # pretend this happened a few seconds ago
         few_seconds_ago = time.time() - 60
@@ -241,10 +242,10 @@ class TestManage(object):
         old_messages_mtime = current_messages_mtime
         manage.translate_desktop(args)
         assert old_messages_mtime == getmtime(messages_file)
-        po = open(po_file).read()
+        po = io.open(po_file).read()
         assert 'SecureDrop Source Interfaces' in po
         assert 'SecureDrop Journalist Interfaces' not in po
-        i18n = open(i18n_file).read()
+        i18n = io.open(i18n_file).read()
         assert 'SOURCE FR' in i18n
 
     def test_translate_messages_l10n(self):
@@ -266,7 +267,7 @@ class TestManage(object):
         manage.translate_messages(args)
         messages_file = join(config.TEMP_DIR, 'messages.pot')
         assert exists(messages_file)
-        pot = open(messages_file).read()
+        pot = io.open(messages_file).read()
         assert 'code hello i18n' in pot
         assert 'template hello i18n' in pot
 
@@ -281,7 +282,7 @@ class TestManage(object):
         assert not exists(mo_file)
         manage.translate_messages(args)
         assert exists(mo_file)
-        mo = open(mo_file).read()
+        mo = io.open(mo_file).read()
         assert 'code hello i18n' in mo
         assert 'template hello i18n' in mo
 
@@ -303,7 +304,7 @@ class TestManage(object):
         manage.translate_messages(args)
         messages_file = join(config.TEMP_DIR, 'messages.pot')
         assert exists(messages_file)
-        pot = open(messages_file).read()
+        pot = io.open(messages_file).read()
         assert 'code hello i18n' in pot
 
         locale = 'en_US'
@@ -344,7 +345,7 @@ class TestManage(object):
         old_po_mtime = current_po_mtime
         manage.translate_messages(args)
         assert old_po_mtime == getmtime(po_file)
-        mo = open(mo_file).read()
+        mo = io.open(mo_file).read()
         assert 'code hello i18n' in mo
         assert 'template hello i18n' not in mo
 
@@ -360,7 +361,7 @@ class TestManage(object):
         args = argparse.Namespace(days=24*60*60,
                                   directory=config.TEMP_DIR,
                                   verbose=logging.DEBUG)
-        open(os.path.join(config.TEMP_DIR, 'FILE'), 'a').close()
+        io.open(os.path.join(config.TEMP_DIR, 'FILE'), 'a').close()
         manage.setup_verbosity(args)
         manage.clean_tmp(args)
         assert 'modified less than' in caplog.text
@@ -370,7 +371,7 @@ class TestManage(object):
                                   directory=config.TEMP_DIR,
                                   verbose=logging.DEBUG)
         fname = os.path.join(config.TEMP_DIR, 'FILE')
-        with open(fname, 'a'):
+        with io.open(fname, 'a'):
             old = time.time() - 24*60*60
             os.utime(fname, (old, old))
         manage.setup_verbosity(args)

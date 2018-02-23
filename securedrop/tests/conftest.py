@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import io
 import shutil
 import signal
 import subprocess
@@ -53,7 +54,7 @@ def setUptearDown():
 
 def _start_test_rqworker(config):
     if not psutil.pid_exists(_get_pid_from_file(TEST_WORKER_PIDFILE)):
-        tmp_logfile = open('/tmp/test_rqworker.log', 'w')
+        tmp_logfile = io.open('/tmp/test_rqworker.log', 'w')
         subprocess.Popen(['rqworker', 'test',
                           '-P', config.SECUREDROP_ROOT,
                           '--pid', TEST_WORKER_PIDFILE],
@@ -73,7 +74,7 @@ def _stop_test_rqworker():
 
 def _get_pid_from_file(pid_file_name):
     try:
-        return int(open(pid_file_name).read())
+        return int(io.open(pid_file_name).read())
     except IOError:
         return None
 
