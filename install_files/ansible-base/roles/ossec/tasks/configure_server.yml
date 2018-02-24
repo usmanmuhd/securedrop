@@ -13,7 +13,7 @@
   copy:
     src: "{{ item }}"
     dest: /var/ossec
-  when: "'{{ item }}' != ''"
+  when: item != ''
   with_items:
     - "{{ ossec_alert_gpg_public_key }}"
     - "{{ journalist_alert_gpg_public_key }}"
@@ -28,7 +28,9 @@
     --import /var/ossec/{{ item }}
   become: yes
   become_user: "{{ ossec_group }}"
-  when: "'{{ item }}' != ''"
+  register: add_ossec_gpg_key_result
+  changed_when: "'imported: 1' in add_ossec_gpg_key_result.stderr"
+  when: item != ''
   with_items:
     - "{{ ossec_alert_gpg_public_key }}"
     - "{{ journalist_alert_gpg_public_key }}"

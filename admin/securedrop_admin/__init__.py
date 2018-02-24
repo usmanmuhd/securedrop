@@ -303,7 +303,7 @@ class SiteConfig(object):
              SiteConfig.ValidateOptionalFingerprint(),
              self.sanitize_fingerprint],
             ['journalist_alert_email', '', str,
-             u'Email address for receiving journalist alerts',
+             u'Email address for receiving journalist alerts (optional)',
              SiteConfig.ValidateOptionalEmail(),
              None],
             ['smtp_relay', "smtp.gmail.com", str,
