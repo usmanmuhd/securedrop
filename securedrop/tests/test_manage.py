@@ -379,7 +379,7 @@ class TestManage(object):
         manage.clean_tmp(args)
         assert 'FILE removed' in caplog.text
 
-    def test_how_many_submissions_today(self, tmpdir):
+    def test_were_there_submissions_today(self, tmpdir):
         data_root = tmpdir
         args = argparse.Namespace(data_root=str(data_root),
                                   verbose=logging.DEBUG)
@@ -389,11 +389,11 @@ class TestManage(object):
         source.last_updated = (datetime.datetime.utcnow() -
                                datetime.timedelta(hours=24*2))
         db.session.commit()
-        manage.how_many_submissions_today(args)
+        manage.were_there_submissions_today(args)
         assert count_file.read() == "0"
         source.last_updated = datetime.datetime.utcnow()
         db.session.commit()
-        manage.how_many_submissions_today(args)
+        manage.were_there_submissions_today(args)
         assert count_file.read() == "1"
 
 

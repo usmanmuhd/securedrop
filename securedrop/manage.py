@@ -401,7 +401,7 @@ def init_db(args):
     os.chown('/var/lib/securedrop/db.sqlite', user.pw_uid, user.pw_gid)
 
 
-def how_many_submissions_today(args):
+def were_there_submissions_today(args):
     if config.DATABASE_ENGINE == "sqlite":
         db_uri = (config.DATABASE_ENGINE + ":///" +
                   config.DATABASE_FILE)
@@ -467,7 +467,7 @@ def get_args():
 
     set_translate_messages_parser(subps)
     set_translate_desktop_parser(subps)
-    set_how_many_submissions_today(subps)
+    set_were_there_submissions_today(subps)
 
     init_db_subp = subps.add_parser('init-db', help='initialize the DB')
     init_db_subp.add_argument('-u', '--user',
@@ -478,12 +478,12 @@ def get_args():
     return parser
 
 
-def set_how_many_submissions_today(subps):
+def set_were_there_submissions_today(subps):
     parser = subps.add_parser(
-        'how-many-submissions-today',
-        help=('Update the file containing '
-              'the number of submissions in the past 24h'))
-    parser.set_defaults(func=how_many_submissions_today)
+        'were-there-submissions-today',
+        help=('Update the file indicating '
+              'iff submissions were received in the past 24h'))
+    parser.set_defaults(func=were_there_submissions_today)
 
 
 def set_translate_parser(subps,
