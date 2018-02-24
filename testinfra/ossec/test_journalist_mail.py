@@ -109,7 +109,7 @@ class TestJournalistMail(TestBase):
         # encrypted mail to journalist or ossec contact
         #
         for (who, payload, expected) in (
-                ('journalist', 'ossec: output\n12345', '12345'),
+                ('journalist', 'ossec: output\n1', '1'),
                 ('ossec', 'MYGREATPAYLOAD', 'MYGREATPAYLOAD')):
             assert self.run(host, "postsuper -d ALL")
             trigger(who, payload)
@@ -157,7 +157,7 @@ class TestJournalistMail(TestBase):
         set -ex
         l="ossec: output: 'head -1 /var/lib/securedrop/submissions_today.txt"
         echo "$l" | /var/ossec/bin/ossec-logtest
-        echo "$l" | /var/ossec/bin/ossec-logtest -U '400600:7:ossec'
+        echo "$l" | /var/ossec/bin/ossec-logtest -U '400600:1:ossec'
         """)
 
     def test_journalist_mail_notification(self, host):
@@ -177,7 +177,7 @@ class TestJournalistMail(TestBase):
         with app.sudo():
             assert self.run(app, """
             cd /var/www/securedrop
-            ./manage.py how-many-submissions-today
+            ./manage.py were-there-submissions-today
             test -f /var/lib/securedrop/submissions_today.txt
             """)
 

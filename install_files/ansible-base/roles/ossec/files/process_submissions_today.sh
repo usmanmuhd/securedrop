@@ -27,7 +27,7 @@ function main() {
     else
         export SUBJECT="SecureDrop Submissions Error"
         (
-            echo "$0 failed to find the number of submissions in the following OSSEC alert"
+            echo "$0 failed to find 0/1 submissions boolean in the following OSSEC alert"
             echo
             echo "$stdin"
         ) | $sender ossec
@@ -45,17 +45,22 @@ function test_main() {
 
     echo BUGOUS | main test_send_encrypted_alarm | \
         tee /dev/stderr | \
-        grep -q 'failed to find the number of submissions'
+        grep -q 'failed to find 0/1 submissions boolean' || exit 1
 
     (
         echo 'ossec: output'
         echo 'NOTANUMBER'
-    ) | main test_send_encrypted_alarm | tee /dev/stderr | grep -q 'failed to find the number of submissions'
+    ) | main test_send_encrypted_alarm | tee /dev/stderr | grep -q 'failed to find 0/1 submissions boolean' || exit 1
 
     (
         echo 'ossec: output'
-        echo '1234'
-    ) | main test_send_encrypted_alarm | tee /dev/stderr | grep -q 'Submissions.*1234'
+        echo '1'
+    ) | main test_send_encrypted_alarm | tee /dev/stderr | grep -q 'There has been submission activity' || exit 1
+
+    (
+        echo 'ossec: output'
+        echo '0'
+    ) | main test_send_encrypted_alarm | tee /dev/stderr | grep -q 'There has been no submission activity' || exit 1
 }
 
 ${1:-main}
