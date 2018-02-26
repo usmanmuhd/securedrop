@@ -55,12 +55,19 @@ function test_main() {
     (
         echo 'ossec: output'
         echo '1'
-    ) | main test_send_encrypted_alarm | tee /dev/stderr | grep -q 'There has been submission activity' || exit 1
+    ) | main test_send_encrypted_alarm | tee /tmp/submission-yes.txt | grep -q 'There has been submission activity' || exit 1
 
     (
         echo 'ossec: output'
         echo '0'
-    ) | main test_send_encrypted_alarm | tee /dev/stderr | grep -q 'There has been no submission activity' || exit 1
+    ) | main test_send_encrypted_alarm | tee /tmp/submission-no.txt | grep -q 'There has been no submission activity' || exit 1
+
+    if test "$(stat --format=%s /tmp/submission-no.txt)" != "$(stat --format=%s /tmp/submission-yes.txt)" ; then
+        echo both files are expected to have exactly the same size, padding must be missing
+        ls -l /tmp/submission-{yes,no}.txt
+        tail -n 200 /tmp/submission-{yes,no}.txt
+        exit 1
+    fi
 }
 
 ${1:-main}
